@@ -252,7 +252,7 @@ func newMessageManager(tsv TabletService, vs VStreamer, table *schema.Table, pos
 		}},
 	}
 	mm.readByPriorityAndTimeNext = sqlparser.BuildParsedQuery(
-		"select priority, time_next, epoch, time_acked, %s from %v where time_next < %a order by priority, time_next desc limit %a",
+		"select priority, time_next, epoch, time_acked, %s from %v force_index (priority__time_next) where time_next < %a order by priority, time_next desc limit %a",
 		columnList, mm.name, ":time_next", ":max")
 	mm.ackQuery = sqlparser.BuildParsedQuery(
 		"update %v set time_acked = %a, time_next = null where id in %a and time_acked is null",
